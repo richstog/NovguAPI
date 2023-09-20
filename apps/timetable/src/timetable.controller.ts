@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { TimetableService } from './timetable.service';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class TimetableController {
@@ -8,5 +9,10 @@ export class TimetableController {
   @Get()
   getHello(): string {
     return this.timetableService.getHello();
+  }
+
+  @MessagePattern('get_timetable')
+  getTimetable(data: any) {
+    return this.timetableService.getTimetable(data)
   }
 }
