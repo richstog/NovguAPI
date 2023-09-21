@@ -3,8 +3,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
+
 @Module({
-  imports: [ClientsModule.register([
+  imports: [
+    ClientsModule.register([
     {
       name: 'TIMETABLE_SERVICE',
       transport: Transport.KAFKA,

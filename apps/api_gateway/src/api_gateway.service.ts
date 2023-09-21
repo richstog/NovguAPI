@@ -1,5 +1,4 @@
 import { CreateUserDto } from '@app/common';
-import { UserCreatedEvent } from '@app/common';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { create } from 'domain';
@@ -15,8 +14,8 @@ export class ApiGatewayService {
 
   createUser(createUserDto: CreateUserDto) {
     this.authClient.emit(
-      'user_created',
-      new UserCreatedEvent(createUserDto.login, createUserDto.password)
+      'create_user',
+      JSON.stringify(createUserDto)
     )
   }
 }

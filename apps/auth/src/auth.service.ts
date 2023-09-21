@@ -1,19 +1,23 @@
-import { UserCreatedEvent, GetUserEvent } from '@app/common';
+import { CreateUserDto, User } from '@app/common';
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
 
   constructor(
-    @Inject('TIMETABLE_SERVICE') private readonly timetableClient: ClientKafka
   ) {}
 
-  handleUserCreated(userCreatedEvent: UserCreatedEvent) {
-    this.timetableClient.send('get_timetable', new GetUserEvent(userCreatedEvent.login)).subscribe((user) => {console.log(user)})
-    console.log(userCreatedEvent)
+  private users: User[] = []
+
+  createUser(data: CreateUserDto): void {
+    this.users.push({ ...data, id: this.users.length + 1})
+    console.log(`Запушен ${data.name}`)
   }
-  getHello(): string {
-    return 'Hello World!';
+
+  getUser(id: number): User {
+    
+    const user = this.users.find(user => user.id === id) || null
+    console.log(`Найден ${user.name}`)
+    return user
   }
 }

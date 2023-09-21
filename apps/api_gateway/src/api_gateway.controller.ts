@@ -6,13 +6,9 @@ import { CreateUserDto } from '@app/common';
 export class ApiGatewayController {
   constructor(private readonly apiGatewayService: ApiGatewayService) {}
 
-  @Get()
-  getHello(): string {
-    return this.apiGatewayService.getHello();
-  }
-
-  @Post()
+  @Post('signup')
   createUser(@Body() createUserDto: CreateUserDto) {
+    console.log(`New user ${createUserDto.name}`)
     this.apiGatewayService.createUser(createUserDto);
   }
 }

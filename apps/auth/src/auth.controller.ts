@@ -1,28 +1,21 @@
-import { Controller, Get, Inject, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, Inject, OnModuleInit, ParseIntPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ClientKafka, EventPattern } from '@nestjs/microservices';
-import { UserCreatedEvent } from '@app/common';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { CreateUserDto } from '@app/common';
 
 @Controller()
-export class AuthController implements OnModuleInit{
+export class AuthController{
   constructor(
     private readonly authService: AuthService,
-    @Inject('TIMETABLE_SERVICE') private readonly timetableClient: ClientKafka
   ) {}
 
-  onModuleInit() {
-    this.timetableClient.subscribeToResponseOf('timetable_consumer')
+  @EventPattern('create_user')
+  handleUserCreate(@Payload() data: CreateUserDto) {
+    this.authService.createUser(data)
   }
 
-  @Get()
-  getHello(): string {
-    return this.authService.getHello();
+  @MessagePattern('get_user')
+  handleGetUser(@Payload('userId') userId: number) {
+    return this.authService.getUser(userId)
   }
-
-  @EventPattern('user_created')
-  handleUserCreated(data: any) {
-    this.authService.handleUserCreated(data)
-  }
-
-  
 }
